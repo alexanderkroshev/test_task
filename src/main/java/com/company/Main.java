@@ -7,14 +7,13 @@ public class Main {
 
     public static void main(String[] args) throws Throwable {
 
+        String str ="2S";
+        System.out.println(SuitCardParse.getCard(str));
+        System.out.println(SuitCardParse.getSuit(str));
         List<Combination> list = new ArrayList<>();
-//        list.add(Combination.TWO);
-//        list.add(Combination.THREE);
-//        list.add(Combination.FOUR);
-//        list.add(Combination.FIVE);
-//        list.add(Combination.TEN);
-        PokerHand pokerHand = new PokerHand("2S 3H 4C 4D QD");
+        PokerHand pokerHand = new PokerHand("2S 3H 4C 5D 6D");
         System.out.println(pokerHand.getCombination());
+        System.out.println(pokerHand.sequenceOrNot());
 
        // System.out.println(PokerHand.sequenceOrNot(pokerHand));
       //  System.out.println(pokerHand.sequenceOrNot(list));

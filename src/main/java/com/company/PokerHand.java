@@ -1,9 +1,13 @@
 package com.company;
 
 import lombok.AllArgsConstructor;
+import lombok.ToString;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
+//TODO change public to private in some methods
+@ToString
 @AllArgsConstructor
 public class PokerHand implements Comparable<PokerHand> {
     private String cards;
@@ -11,8 +15,10 @@ public class PokerHand implements Comparable<PokerHand> {
     public List<SuitCard> getSuitCardList() {
         List<SuitCard> suitCardList = new ArrayList<>();
         String[] array = this.cards.split(" ");
+        if (array.length != 5)
+            throw new RuntimeException("input hand size is not equail to 5");
         for ( String i : array ) {
-            suitCardList.add(new SuitCard(getSuit(i), getCard(i)));
+            suitCardList.add(new SuitCard(SuitCardParse.getSuit(i), SuitCardParse.getCard(i)));
         }
         return suitCardList;
     }
@@ -26,18 +32,21 @@ public class PokerHand implements Comparable<PokerHand> {
                 map.put(i.getCard(), map.get(i.getCard()) + 1);
             }
         }
-        List<Integer> values = (List<Integer>) map.values();
+        Collection<Integer> values = map.values();
         if (values.contains(4))
             return Combination.FOUR_OF_A_KIND;
-        if (values.contains(3) && values.contains(2))
-            return Combination.FULL_HOUSE;
+        if (values.contains(3))
+            if (values.contains(2))
+                return Combination.FULL_HOUSE;
+            else
+                return Combination.THREE_OF_A_KIND;
         if (values.contains(2)) {
             if (values.size() == 3)
                 return Combination.TWO_PAIRS;
             else
                 return Combination.PAIR;
         }
-        if (sequenceOrNot(values)) {
+        if (sequenceOrNot()) {
             if (theSameSuitOrNot()) {
                 if (getSuitCardList().stream().map(SuitCard::getCard).anyMatch(x -> x == Card.ACE))
                     return Combination.ROYAL_FLUSH;
@@ -46,8 +55,9 @@ public class PokerHand implements Comparable<PokerHand> {
             } else
                 return Combination.STRAIGHT;
         }
-        else
+        if (theSameSuitOrNot())
             return Combination.FLUSH;
+        return Combination.HIGH_CARD;
     }
 
     public boolean theSameSuitOrNot() {
@@ -57,9 +67,9 @@ public class PokerHand implements Comparable<PokerHand> {
                 .allMatch(x -> x == suit);
     }
 
-
-    public boolean sequenceOrNot(Collection<Integer> list) {
-        List<Integer> powerList = list.stream()
+    public boolean sequenceOrNot() {
+        List<Integer> powerList = getSuitCardList().stream()
+                .map(x -> x.getCard().getPower())
                 .sorted()
                 .collect(Collectors.toList());
         for ( int i = 0; i < powerList.size() - 1; i++ ) {
@@ -69,54 +79,8 @@ public class PokerHand implements Comparable<PokerHand> {
         return true;
     }
 
-    public Suit getSuit(String str) {
-        char secondChar = str.charAt(1);
-        if (secondChar == 'S')
-            return Suit.SPADE;
-        if (secondChar == 'C')
-            return Suit.CLUB;
-        if (secondChar == 'D')
-            return Suit.DIAMOND;
-        if (secondChar == 'H')
-            return Suit.HEART;
-        else
-            throw new RuntimeException("problem with parsing value");
-    }
-
-    public Card getCard(String str) {
-        char firstChar = str.charAt(0);
-        if (firstChar == '2')
-            return Card.TWO;
-        if (firstChar == '3')
-            return Card.THREE;
-        if (firstChar == '4')
-            return Card.FOUR;
-        if (firstChar == '5')
-            return Card.FIVE;
-        if (firstChar == '6')
-            return Card.SIX;
-        if (firstChar == '7')
-            return Card.SEVEN;
-        if (firstChar == '8')
-            return Card.EIGHT;
-        if (firstChar == '9')
-            return Card.NINE;
-        if (firstChar == 'T')
-            return Card.TEN;
-        if (firstChar == 'J')
-            return Card.JACK;
-        if (firstChar == 'Q')
-            return Card.QUEEN;
-        if (firstChar == 'K')
-            return Card.KING;
-        if (firstChar == 'A')
-            return Card.ACE;
-        else
-            throw new RuntimeException("problem with parsing combination");
-    }
-
     @Override
     public int compareTo(PokerHand o) {
-        return this.getCombination().getPower() + -o.getCombination().getPower();
+        return o.getCombination().getPower()-this.getCombination().getPower() ;
     }
 }
