@@ -1,10 +1,12 @@
 package com.company;
 
 import lombok.AllArgsConstructor;
+import lombok.ToString;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@ToString
 @AllArgsConstructor
 public class PokerHand implements Comparable<PokerHand> {
     private String cards;
@@ -90,26 +92,6 @@ public class PokerHand implements Comparable<PokerHand> {
             return 0;
     }
 
-    @Override
-    public int compareTo(PokerHand o) {
-        int result;
-        result = o.getCombination().getPower() - this.getCombination().getPower();
-        if (result == 0)
-            result = o.secondCriteria() - this.secondCriteria();
-        if (result == 0)
-            result = o.thirdCriteria() - this.thirdCriteria();
-        if (result == 0)
-            result = o.fourthCriteria() - this.fourthCriteria();
-        return result;
-    }
-
-    private int fourthCriteria() {
-        if (this.getCombination() == Combination.TWO_PAIRS)
-            return getPowerByFrequency(1);
-        else
-            return 0;
-    }
-
     private int thirdCriteria() {
         Combination combination = this.getCombination();
         if (combination == Combination.PAIR)
@@ -126,6 +108,26 @@ public class PokerHand implements Comparable<PokerHand> {
             return 0;
     }
 
+    private int fourthCriteria() {
+        if (this.getCombination() == Combination.TWO_PAIRS)
+            return getPowerByFrequency(1);
+        else
+            return 0;
+    }
+
+    @Override
+    public int compareTo(PokerHand o) {
+        int result;
+        result = o.getCombination().getPower() - this.getCombination().getPower();
+        if (result == 0)
+            result = o.secondCriteria() - this.secondCriteria();
+        if (result == 0)
+            result = o.thirdCriteria() - this.thirdCriteria();
+        if (result == 0)
+            result = o.fourthCriteria() - this.fourthCriteria();
+        return result;
+    }
+
     private Map<Card, Integer> getCollisionMap() {
         Map<Card, Integer> map = new HashMap<>();
         for ( SuitCard i : getSuitCardSet() ) {
@@ -137,6 +139,7 @@ public class PokerHand implements Comparable<PokerHand> {
         }
         return map;
     }
+
 
     private int getPowerByFrequency(int frequency) {
         List<Integer> cards = new ArrayList<>();
