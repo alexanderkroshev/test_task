@@ -26,15 +26,7 @@ public class PokerHand implements Comparable<PokerHand> {
     }
 
     public Combination getCombination() {
-        Map<Card, Integer> map = new HashMap<>();
-        for ( SuitCard i : getSuitCardSet() ) {
-            if (!map.containsKey(i.getCard()))
-                map.put(i.getCard(), 1);
-            else {
-                map.put(i.getCard(), map.get(i.getCard()) + 1);
-            }
-        }
-        Collection<Integer> values = map.values();
+        Collection<Integer> values = getCollisionMap().values();
         if (values.contains(4))
             return Combination.FOUR_OF_A_KIND;
         if (values.contains(3))
@@ -62,14 +54,14 @@ public class PokerHand implements Comparable<PokerHand> {
         return Combination.HIGH_CARD;
     }
 
-    public boolean theSameSuitOrNot() {
+    private boolean theSameSuitOrNot() {
         Suit suit = getSuitCardSet().stream().findFirst().get().getSuit();
         return getSuitCardSet().stream()
                 .map(SuitCard::getSuit)
                 .allMatch(x -> x == suit);
     }
 
-    public boolean sequenceOrNot() {
+    private boolean sequenceOrNot() {
         List<Integer> powerList = getSuitCardSet().stream()
                 .map(x -> x.getCard().getPower())
                 .sorted()
@@ -81,23 +73,81 @@ public class PokerHand implements Comparable<PokerHand> {
         return true;
     }
 
-    public int secondCriteria(){
-        if(this.getCombination() == Combination.HIGH_CARD)
-            return getMaxCard();
+    private int secondCriteria() {
+        Combination combination = this.getCombination();
+        if (combination == Combination.HIGH_CARD)
+            return getPowerByFrequency(1);
+        if (combination == Combination.PAIR || combination == Combination.TWO_PAIRS)
+            return getPowerByFrequency(2);
+        if (combination == Combination.THREE_OF_A_KIND)
+            return getPowerByFrequency(3);
+        if (combination == Combination.FOUR_OF_A_KIND)
+            return getPowerByFrequency(4);
+        if (combination == Combination.FULL_HOUSE)
+            return getPowerByFrequency(3);
+        if (combination == Combination.STRAIGHT
+                || combination == Combination.FLUSH
+                || combination == Combination.STRAIGHT_FLUSH)
+            return getPowerByFrequency(1);
         else
             return 0;
     }
 
     @Override
     public int compareTo(PokerHand o) {
-        return o.getCombination().getPower() - this.getCombination().getPower();
+        int result;
+        result = o.getCombination().getPower() - this.getCombination().getPower();
+        if (result == 0)
+            result = o.secondCriteria() - this.secondCriteria();
+        if (result == 0)
+            result = o.thirdCriteria() - this.thirdCriteria();
+        if (result == 0)
+            result = o.fourthCriteria() - this.fourthCriteria();
+        return result;
     }
 
-    public int getMaxCard(){
-        return getSuitCardSet()
-                .stream()
-                .map(x->x.getCard().getPower())
-                .max(Integer::compareTo)
-                .get();
+    private int fourthCriteria() {
+        if (this.getCombination() == Combination.TWO_PAIRS)
+            return getPowerByFrequency(1);
+        else
+            return 0;
+    }
+
+    private int thirdCriteria() {
+        Combination combination = this.getCombination();
+        if (combination == Combination.PAIR)
+            return getPowerByFrequency(1);
+        if (combination == Combination.TWO_PAIRS) {
+            List<Integer> cards = new ArrayList<>();
+            Map<Card, Integer> map = getCollisionMap();
+            for ( Map.Entry<Card, Integer> i : map.entrySet() ) {
+                if (i.getValue() == 2)
+                    cards.add(i.getKey().getPower());
+            }
+            return Collections.min(cards);
+        } else
+            return 0;
+    }
+
+    private Map<Card, Integer> getCollisionMap() {
+        Map<Card, Integer> map = new HashMap<>();
+        for ( SuitCard i : getSuitCardSet() ) {
+            if (!map.containsKey(i.getCard()))
+                map.put(i.getCard(), 1);
+            else {
+                map.put(i.getCard(), map.get(i.getCard()) + 1);
+            }
+        }
+        return map;
+    }
+
+    private int getPowerByFrequency(int frequency) {
+        List<Integer> cards = new ArrayList<>();
+        Map<Card, Integer> map = getCollisionMap();
+        for ( Map.Entry<Card, Integer> i : map.entrySet() ) {
+            if (i.getValue() == frequency)
+                cards.add(i.getKey().getPower());
+        }
+        return Collections.max(cards);
     }
 }
