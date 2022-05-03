@@ -1,12 +1,10 @@
 package com.company;
 
 import lombok.AllArgsConstructor;
-import lombok.ToString;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@ToString
 @AllArgsConstructor
 public class PokerHand implements Comparable<PokerHand> {
     private String cards;
