@@ -6,7 +6,6 @@ import lombok.ToString;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//TODO change public to private in some methods
 @ToString
 @AllArgsConstructor
 public class PokerHand implements Comparable<PokerHand> {
