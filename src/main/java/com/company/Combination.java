@@ -18,6 +18,5 @@ public enum Combination {
     STRAIGHT_FLUSH(10),
     ROYAL_FLUSH(11);
 
-    private final int powerOfCombination;
-
+    private final int power;
 }
