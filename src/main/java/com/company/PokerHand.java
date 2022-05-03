@@ -12,20 +12,22 @@ import java.util.stream.Collectors;
 public class PokerHand implements Comparable<PokerHand> {
     private String cards;
 
-    public List<SuitCard> getSuitCardList() {
-        List<SuitCard> suitCardList = new ArrayList<>();
+    public Set<SuitCard> getSuitCardSet() {
+        Set<SuitCard> suitCards = new HashSet<>();
         String[] array = this.cards.split(" ");
         if (array.length != 5)
-            throw new RuntimeException("input hand size is not equail to 5");
+            throw new RuntimeException("amount of cards is not equal to 5");
         for ( String i : array ) {
-            suitCardList.add(new SuitCard(SuitCardParse.getSuit(i), SuitCardParse.getCard(i)));
+            suitCards.add(new SuitCard(SuitCardParse.getSuit(i), SuitCardParse.getCard(i)));
         }
-        return suitCardList;
+        if (suitCards.size() != 5)
+            throw new RuntimeException("hand contain identical card");
+        return suitCards;
     }
 
     public Combination getCombination() {
         Map<Card, Integer> map = new HashMap<>();
-        for ( SuitCard i : getSuitCardList() ) {
+        for ( SuitCard i : getSuitCardSet() ) {
             if (!map.containsKey(i.getCard()))
                 map.put(i.getCard(), 1);
             else {
@@ -48,7 +50,7 @@ public class PokerHand implements Comparable<PokerHand> {
         }
         if (sequenceOrNot()) {
             if (theSameSuitOrNot()) {
-                if (getSuitCardList().stream().map(SuitCard::getCard).anyMatch(x -> x == Card.ACE))
+                if (getSuitCardSet().stream().map(SuitCard::getCard).anyMatch(x -> x == Card.ACE))
                     return Combination.ROYAL_FLUSH;
                 else
                     return Combination.STRAIGHT_FLUSH;
@@ -61,14 +63,14 @@ public class PokerHand implements Comparable<PokerHand> {
     }
 
     public boolean theSameSuitOrNot() {
-        Suit suit = getSuitCardList().get(0).getSuit();
-        return getSuitCardList().stream()
+        Suit suit = getSuitCardSet().stream().findFirst().get().getSuit();
+        return getSuitCardSet().stream()
                 .map(SuitCard::getSuit)
                 .allMatch(x -> x == suit);
     }
 
     public boolean sequenceOrNot() {
-        List<Integer> powerList = getSuitCardList().stream()
+        List<Integer> powerList = getSuitCardSet().stream()
                 .map(x -> x.getCard().getPower())
                 .sorted()
                 .collect(Collectors.toList());
@@ -79,8 +81,23 @@ public class PokerHand implements Comparable<PokerHand> {
         return true;
     }
 
+    public int secondCriteria(){
+        if(this.getCombination() == Combination.HIGH_CARD)
+            return getMaxCard();
+        else
+            return 0;
+    }
+
     @Override
     public int compareTo(PokerHand o) {
-        return o.getCombination().getPower()-this.getCombination().getPower() ;
+        return o.getCombination().getPower() - this.getCombination().getPower();
+    }
+
+    public int getMaxCard(){
+        return getSuitCardSet()
+                .stream()
+                .map(x->x.getCard().getPower())
+                .max(Integer::compareTo)
+                .get();
     }
 }

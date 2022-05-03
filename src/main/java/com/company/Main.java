@@ -5,15 +5,14 @@ import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) throws Throwable {
+    public static void main(String[] args) {
 
-        String str ="2S";
-        System.out.println(SuitCardParse.getCard(str));
-        System.out.println(SuitCardParse.getSuit(str));
         List<Combination> list = new ArrayList<>();
-        PokerHand pokerHand = new PokerHand("2S 3H 4C 5D 6D");
-        System.out.println(pokerHand.getCombination());
-        System.out.println(pokerHand.sequenceOrNot());
+        PokerHand pokerHand = new PokerHand("2S 3S 4S 5S KD");
+        System.out.println(pokerHand.getMaxCard());
+//        System.out.println(pokerHand.getCombination());
+//        System.out.println(pokerHand.sequenceOrNot());
+//        System.out.println(pokerHand.theSameSuitOrNot());
 
        // System.out.println(PokerHand.sequenceOrNot(pokerHand));
       //  System.out.println(pokerHand.sequenceOrNot(list));
