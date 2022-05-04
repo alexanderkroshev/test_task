@@ -65,7 +65,7 @@ public class PokerHandTest {
 
     @Test
     void RoyalFlushTest() {
-        PokerHand pokerHand = new PokerHand("TS JS QS KS AS");
+        PokerHand pokerHand = new PokerHand("JS TS QS KS AS");
         Assertions.assertEquals(pokerHand.getCombination(), Combination.ROYAL_FLUSH);
     }
 
