@@ -76,5 +76,4 @@ public class CombinationCriteria {
         }
         return Collections.max(cards);
     }
-
 }
