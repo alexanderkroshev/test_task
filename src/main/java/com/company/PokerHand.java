@@ -11,12 +11,12 @@ public class PokerHand implements Comparable<PokerHand> {
     private final String cards;
 
     public Combination getCombination() {
-        CombinationParse combinationParse = new CombinationParse(getSuitCardSet());
-        return combinationParse.getCombination();
+        CombinationParser combinationParser = new CombinationParser(getSuitCardSet());
+        return combinationParser.getCombination();
     }
 
     private Set<SuitCard> getSuitCardSet() {
-        return SuitCardParse.getSuitCardSet(cards);
+        return SuitCardParser.getSuitCardSet(cards);
     }
 
     private int secondCriteria() {
@@ -47,7 +47,7 @@ public class PokerHand implements Comparable<PokerHand> {
             return getCardPowerByFrequency(1);
         if (combination == Combination.TWO_PAIRS) {
             List<Integer> cards = new ArrayList<>();
-            Map<Card, Integer> map = CombinationUtils.getCardMap(getSuitCardSet());
+            Map<Card, Integer> map = FrequencyMap.getCardMap(getSuitCardSet());
             for ( Map.Entry<Card, Integer> i : map.entrySet() ) {
                 if (i.getValue() == 2)
                     cards.add(i.getKey().getPower());
@@ -79,7 +79,7 @@ public class PokerHand implements Comparable<PokerHand> {
 
     private int getCardPowerByFrequency(int frequency) {
         List<Integer> cards = new ArrayList<>();
-        Map<Card, Integer> map = CombinationUtils.getCardMap(getSuitCardSet());
+        Map<Card, Integer> map = FrequencyMap.getCardMap(getSuitCardSet());
         for ( Map.Entry<Card, Integer> i : map.entrySet() ) {
             if (i.getValue() == frequency)
                 cards.add(i.getKey().getPower());

@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @RequiredArgsConstructor
-public class SuitCardParse {
+public class SuitCardParser {
 
     public static Set<SuitCard> getSuitCardSet(String cards) {
         Set<SuitCard> suitCards = new HashSet<>();
