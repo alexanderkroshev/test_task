@@ -15,7 +15,7 @@ public class SuitCard {
     private Suit suit;
     private Card card;
 
-    public static Map<Card, Integer> calcFrequencyMap(Set<SuitCard> suitCardSet ) {//TODO
+    public static Map<Card, Integer> calcFrequencyMap(Set<SuitCard> suitCardSet ) {
         Map<Card, Integer> map = new HashMap<>();
         for ( SuitCard i : suitCardSet ) {
             if (!map.containsKey(i.getCard()))

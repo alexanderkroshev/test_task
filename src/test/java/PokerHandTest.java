@@ -76,10 +76,11 @@ public class PokerHandTest {
         PokerHand hand3 = new PokerHand("2S 2D 3D 3S AS");//2 pair
         PokerHand hand4 = new PokerHand("2S 2D 4D 4S AS");//2 pair
         PokerHand hand5 = new PokerHand("3S 3D 4D 4S AS");//2 pair
-        PokerHand hand6 = new PokerHand("3S 3D 3C 4S AS");//3 of kind (highest)
+        PokerHand hand6 = new PokerHand("3S 3D 3C 4S AS");//3 of kind
+        PokerHand hand7 = new PokerHand("3S 3D 3C 4S 4H");//full house (highest)
 
-        List<PokerHand> hands = new ArrayList<>(Arrays.asList(hand2, hand1, hand6, hand4, hand5, hand3));
-        List<PokerHand> expectList = new ArrayList<>(Arrays.asList(hand6, hand5, hand4, hand3, hand2, hand1));
+        List<PokerHand> hands = new ArrayList<>(Arrays.asList(hand2, hand1, hand6, hand4, hand5, hand3, hand7));
+        List<PokerHand> expectList = new ArrayList<>(Arrays.asList(hand7, hand6, hand5, hand4, hand3, hand2, hand1));
         Collections.sort(hands);
         Assertions.assertEquals(hands, expectList);
     }
