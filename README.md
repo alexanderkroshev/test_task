@@ -31,3 +31,4 @@
 1) java 8
 2) JUnit
 3) Lombok
+4) maven
