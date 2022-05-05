@@ -23,7 +23,7 @@ public class SuitCardParser {
 
     private static Suit getSuit(String cards) {
         if (cards.length() != 2)
-            throw new RuntimeException("incorrect input data for parsing suit");
+            throw new RuntimeException("incorrect input data");
         char secondChar = cards.charAt(1);
         if (secondChar == 'S')
             return Suit.SPADE;
@@ -34,12 +34,12 @@ public class SuitCardParser {
         if (secondChar == 'H')
             return Suit.HEART;
         else
-            throw new RuntimeException("problem with parsing suit");
+            throw new RuntimeException("incorrect data for parsing suit");
     }
 
     private static Card getCard(String cards) {
         if (cards.length() != 2)
-            throw new RuntimeException("incorrect input data for parsing card");
+            throw new RuntimeException("incorrect input data");
         char firstChar = cards.charAt(0);
         if (firstChar == '2')
             return Card.TWO;
@@ -68,6 +68,6 @@ public class SuitCardParser {
         if (firstChar == 'A')
             return Card.ACE;
         else
-            throw new RuntimeException("problem with parsing card");
+            throw new RuntimeException("incorrect data for parsing card");
     }
 }
