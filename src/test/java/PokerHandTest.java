@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class PokerHandTest {
+
     @Test
     void HighCardTest() {
         PokerHand pokerHand = new PokerHand("2S 4H 5D JC KD");
